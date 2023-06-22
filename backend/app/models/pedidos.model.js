@@ -1,52 +1,53 @@
 const sql = require("./db.js");
 //construtor
-const ProdutoModel = function (produto) {
-    this.nome = produto.nome;
-    this.valor = produto.valor;
+const PedidosModel = function (pedido) {
+    this.hora = pedido.hora;
+    this.status = pedido.status;
 }
 
-//cria novo produto no banco
-ProdutoModel.create = (produto, result) => {
-    sql.query("insert into produtos set ?", produto, (err, res) => {
+
+//cria novo pedido no banco
+PedidosModel.create = (pedido, result) => {
+    sql.query("insert into pedidos set ?", pedido, (err, res) => {
         if (err) {
             console.log("erro: ", err);
             result(err, null);
             return;
         }
 
-        console.log("produto criado: ", { idprodutos: res.insertId, ...produto });
-        result(null, { idprodutos: res.insertId, ...produto });
+        console.log("produto criado: ", { idpedidos: res.insertId, ...pedido });
+        result(null, { idpedidos: res.insertId, ...pedido });
     })
 };
 //seleciona produto por ID
-ProdutoModel.findById = (produtoId, result) => {
+PedidosModel.findById = (pedidoId, result) => {
 
-    sql.query("select * from produtos where idprodutos = " + produtoId, (err, res) => {
+    sql.query("select * from pedidos where idpedidos = " + pedidoId, (err, res) => {
         if (err) {
             console.log("erro: ", err);
             result(null, err);
             return;
         }
         if (res.length) {
-            console.log("produto encontrado", res[0]);
+            console.log("pedido encontrado", res[0]);
             result(null, res[0]);
         } else {
             result({ type: "not_found" }, null);
-            console.log("produto não encontrado");
+            console.log("pedido não encontrado");
         }
     })
 
 };
 
 //seleciona todos os produtos
-ProdutoModel.getAll = result => {
-    sql.query("SELECT * FROM produtos", (err, res) => {
+PedidosModel.getAll = result => {
+    sql.query("SELECT * FROM pedidos", (err, res) => {
         if (err) {
             console.log("erro: ", err);
             result(null, err);
             return;
         }
-        console.log("produto: ", res);
+        console.log("pedido: ", res);
         result(null, res);
     })
 };
@@ -56,25 +57,25 @@ ProdutoModel.getAll = result => {
 
 
 //atualizar produto por id
-ProdutoModel.updateById = (produtoId, produto, result) => {
-    sql.query("UPDATE produtos SET nome = ?, valor = ? WHERE idprodutos = ?",
-        [produto.nome, produto.valor, produtoId], (err, res) => {
+PedidosModel.updateById = (pedidoId, pedido, result) => {
+    sql.query("UPDATE pedidos SET hora = ?, status = ? WHERE idpedidos = ?",
+        [pedido.nome, pedidoId.valor, pedidoId], (err, res) => {
             if (err) {
                 console.log("erro: ", err);
                 result(null, err);
             } else if (res.affectedRows == 0) {
                 result({ type: "not_found" }, null);
             } else {
-                console.log("Produto atualizado: ", { idprodutos: produtoId, ...produto });
-                result(null, { idprodutos: produtoId, ...produto });
+                console.log("Pedido atualizado: ", { idpedidos: pedidoId, ...pedido });
+                result(null, { idpedidos: pedidoId, ...pedido });
             }
         })
 
 };
 
 //remover produto por ID
-ProdutoModel.remove = (produtoId, result) => {
-    sql.query("DELETE FROM produtos WHERE idprodutos = ?", produtoId, (err, res) => {
+PedidosModel.remove = (pedidoId, result) => {
+    sql.query("DELETE FROM pedidos WHERE idpedidos = ?", pedidoId, (err, res) => {
         if (err) {
             console.log("erro: ", err);
             result(err, null);
@@ -87,8 +88,8 @@ ProdutoModel.remove = (produtoId, result) => {
 };
 
 //remover todos os produtos
-ProdutoModel.removeAll = (result) => {
-    sql.query("DELETE FROM produtos", produtoId, (err, res) => {
+PedidosModel.removeAll = (result) => {
+    sql.query("DELETE FROM pedidos", pedidoId, (err, res) => {
         if (err) {
             console.log("erro: ", err);
             result(err, null);
@@ -99,4 +100,4 @@ ProdutoModel.removeAll = (result) => {
         }
     });
 };
-module.exports = ProdutoModel;
+module.exports = PedidosModel;
